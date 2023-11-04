@@ -2,7 +2,7 @@ import numpy as np
 
 def entropy(y):
     """
-    Computes the entropy.
+    Computes entropy.
     """
     _, counts = np.unique(y, return_counts=True)
     p = counts / len(y)
@@ -10,7 +10,7 @@ def entropy(y):
 
 def gini_impurity(y):
     """
-    Computes the Gini impurity.
+    Computes Gini impurity.
     """
     _, counts = np.unique(y, return_counts=True)
     p = counts / len(y)
@@ -18,10 +18,10 @@ def gini_impurity(y):
 
 def information_gain(y_parent, y_left, y_right, criterion='gini'):
     """
-    Computes the information gain.
+    Computes information gain.
     """
     f = gini_impurity if criterion == 'gini' else entropy
-    return f(y_parent) - ((len(y_left) / len(y_parent)) * f(y_left) + (len(y_right) / len(y_parent)) * f(y_right))
+    return f(y_parent) - (len(y_left) / len(y_parent)) * f(y_left) - (len(y_right) / len(y_parent)) * f(y_right)
 
 class Node():
     """
@@ -39,24 +39,48 @@ class DecisionTreeClassifier():
     """
     Decision tree model.
     """
-    def __init__(self, max_depth=None, min_samples_split=2):
+    def __init__(self, max_depth=2, min_samples_split=2):
         """
         Constructor.
         """
+        self.root = None
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
 
-    def _best_split(self, X, y, n_samples, n_features):
+    def _best_split(self, data, n_samples, n_features):
         """
         Finds the best split according to the data.
         """
-        pass
+        feature = None
+        threshold = None
+        left = None
+        right = None
+        gain = -1.0
 
-    def _get_leaf_value(self, y):
-        """
-        Computes the leaf value based on y.
-        """
-        return max(y, key=y.count)
+        for col in range(n_features):
+            thresholds = np.unique(data[:, col])
+            for curr_threshold in thresholds:
+                curr_left = []
+                curr_right = []
+                for row in range(n_samples):
+                    if data[row, col] <= curr_threshold:
+                        curr_left.append(data[row])
+                    else:
+                        curr_right.append(data[row])
+                curr_left = np.array(curr_left)
+                curr_right = np.array(curr_right)
+                if len(curr_left) != 0 and len(curr_right) != 0:
+                    y = data[:, -1]
+                    y_left = curr_left[:, -1]
+                    y_right = curr_right[:, -1]
+                    curr_gain = information_gain(y, y_left, y_right)
+                    if curr_gain > gain:
+                        feature = col
+                        threshold = curr_threshold
+                        left = curr_left
+                        right = curr_right
+                        gain = curr_gain
+        return feature, threshold, left, right, gain
 
     def _build(self, data, depth=0):
         """
@@ -65,14 +89,33 @@ class DecisionTreeClassifier():
         X, y = data[:, :-1], data[:, -1]
         n_samples, n_features = X.shape
         if n_samples >= self.min_samples_split and depth <= self.max_depth:
-            best = self._best_split(X, y, n_samples, n_features)
-            if best["gain"] > 0:
-                left = self._build(best["left"], depth + 1)
-                right = self._build(best["right"], depth + 1)
-                ...
+            feature, threshold, left, right, gain = self._best_split(data, n_samples, n_features)
+            left = self._build(left, depth=depth + 1)
+            right = self._build(right, depth=depth + 1)
+            return Node(feature=feature, threshold=threshold, left=left, right=right, gain=gain)
+        else:
+            return Node(value=max(y, key=y.tolist().count))
 
     def fit(self, X, y):
         """
         Fits the decision tree to the data.
         """
-        self._build(np.concatenate(X, y, axis=1))
+        self.root = self._build(np.column_stack((X, y)))
+
+    def predict(self, X):
+        """
+        Predicts classes for X.
+        """
+        return [self.make_prediction(row, self.root) for row in X]
+    
+    def make_prediction(self, x, tree):
+        """
+        Predicts the class for a single data point.
+        """
+        if tree.value != None: 
+            return tree.value
+        value = x[tree.feature]
+        if value <= tree.threshold:
+            return self.make_prediction(x, tree.left)
+        else:
+            return self.make_prediction(x, tree.right)
