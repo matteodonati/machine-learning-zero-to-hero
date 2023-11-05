@@ -31,3 +31,27 @@ def recall_score(y_true, y_pred):
     """
     cm = confusion_matrix(y_true, y_pred)
     return np.mean(np.diag(cm) / np.sum(cm, axis=1))
+
+def entropy(y):
+    """
+    Computes entropy.
+    """
+    _, counts = np.unique(y, return_counts=True)
+    p = counts / len(y)
+    return -np.sum(p * np.log2(p))
+
+def gini_impurity(y):
+    """
+    Computes Gini impurity.
+    """
+    _, counts = np.unique(y, return_counts=True)
+    p = counts / len(y)
+    return 1 - np.sum(p**2)
+
+def information_gain(y_parent, y_left, y_right, criterion='gini'):
+    """
+    Computes information gain.
+    """
+    f = gini_impurity if criterion == 'gini' else entropy
+    return f(y_parent) - (len(y_left) / len(y_parent)) * f(y_left) - (len(y_right) / len(y_parent)) * f(y_right)
+
