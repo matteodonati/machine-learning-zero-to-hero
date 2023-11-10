@@ -15,13 +15,18 @@ def _create_scatter_plot(x, y, color, marker_symbol=None):
         ),
     )
 
-def plot_data(X, y, name, marker_symbol='circle'):
+def create_plot():
     """
-    Plots the data.
+    Creates a plot.
     """
     fig = go.Figure()
-    scatter = _create_scatter_plot(X[:, 0], X[:, 1], y, marker_symbol=marker_symbol)
-    fig.add_trace(scatter)
     fig.update_xaxes(showgrid=True, showticklabels=False)
     fig.update_yaxes(showgrid=True, showticklabels=False)
-    return fig 
+    return fig
+
+def add_data_to_plot(fig, X, y, marker_symbol='circle'):
+    """
+    Adds data to a plot.
+    """
+    scatter = _create_scatter_plot(X[:, 0], X[:, 1], y, marker_symbol=marker_symbol)
+    fig.add_trace(scatter)
