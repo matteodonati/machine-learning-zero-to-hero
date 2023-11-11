@@ -1,0 +1,24 @@
+[[pages]]
+path = "app.py"
+name = "Home"
+icon = ":house:"
+
+[[pages]]
+path = "pages/classification.py"
+name = "Classification"
+icon = ":bar_chart:"
+
+[[pages]]
+path = "pages/regression.py"
+name = "Regression"
+icon = ":chart_with_upwards_trend:"
+
+[[pages]]
+path = "pages/clustering.py"
+name = "Clustering"
+icon = ":white_square_button:"
+
+[[pages]]
+path = "pages/documentation.py"
+name = "Documentation"
+icon = ":page_facing_up:"
