@@ -12,3 +12,11 @@ def train_test_split(X, y, train_size=None, test_size=None):
     elif test_size != None:
         n_train = int(n - test_size * n)
     return X_shuffled[:n_train], X_shuffled[n_train:], y_shuffled[:n_train], y_shuffled[n_train:]
+
+def normalize_data(X):
+    """
+    Normalizes the data.
+    """
+    for i in range(X.shape[-1]):
+        col = X[:, i]
+        X[:, i] = (col - col.min()) / (col.max() - col.min())
