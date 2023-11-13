@@ -26,7 +26,7 @@ with col_data:
         noise = st.slider('Select the amount of noise', 0.0, 0.1, 0.05)
         X, y = make_moons(n_samples=n_samples, noise=noise)
     elif data_option == BLOBS:
-        centers = st.slider('Select the number of clusters', 0, 5, 2)
+        centers = st.slider('Select the number of clusters', 0, 5, 3)
         X, y = make_blobs(n_samples=n_samples, centers=centers)
 
     normalize_data(X)

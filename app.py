@@ -1,7 +1,5 @@
 import streamlit as st
-import base64
 from st_pages import show_pages_from_config
-from pathlib import Path
 
 st.set_page_config(layout='centered')
 st.title('Machine Learning: From Zero to Hero :rocket:')
@@ -18,14 +16,3 @@ st.markdown(
     """, 
     unsafe_allow_html=True
 )
-
-with st.sidebar:
-    img = Path('./images/github.png').read_bytes()
-    encoded = base64.b64encode(img).decode()
-    st.markdown(
-        """
-        [<img src='data:image/png;base64,{}' class='img-fluid' width=25 height=25>](https://github.com/matteodonati/machine-learning-zero-to-hero) 
-        <small> &nbsp; Machine Learning: From Zero to Hero </small>
-        """.format(encoded),
-        unsafe_allow_html=True,
-    )

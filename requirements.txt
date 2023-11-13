@@ -1,5 +1,5 @@
+streamlit
 numpy
-sklearn
+scikit-learn
 plotly
 st-pages
-pathlib
