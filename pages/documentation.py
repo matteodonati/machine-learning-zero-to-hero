@@ -16,13 +16,22 @@ if option == CLASSIFICATION_TREE:
         """
         ---
         
-        ## Classification Tree
+        ## Classification Tree &nbsp; <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/classification/tree.py" style="font-size: 15px">[source]</a>
 
+        A decision tree for classification problems is a predictive model that maps features 
+        (input variables) to outcomes (classes or labels) by recursively splitting 
+        the data based on the values of the features. It is a tree-like structure where 
+        each internal node represents a decision based on a particular feature, each 
+        branch represents an outcome of that decision, and each leaf node represents 
+        the final class label. The goal of a decision tree is to create a set of rules 
+        that can be easily followed to make predictions about the class of a new instance. 
+        The process of building a decision tree involves selecting the best feature at 
+        each node to maximize the separation of classes in the data.
+        
         The following code defines the classes required to implement a decision 
-        tree model for classification. Decision trees are a popular machine 
-        learning algorithm used for both classification and regression tasks. 
-        This documentation will provide an overview of how the proposed implementation 
-        works and describe the key components of the code.
+        tree model for classification. This documentation will provide an overview 
+        of how the proposed implementation works and describe the key components of 
+        the code.
 
         ### `Node` Class
 
@@ -243,5 +252,6 @@ if option == CLASSIFICATION_TREE:
             else:
                 return self.make_prediction(x, tree.right)
         ```
-        """
+        """,
+        unsafe_allow_html=True
     )
