@@ -1,9 +1,10 @@
 import streamlit as st
 from sklearn.datasets import make_moons, make_blobs
 from ml.utils.data import train_test_split, normalize_data
+from ml.utils.metrics import accuracy_score, precision_score, recall_score
 from ui.utils.plot import create_plot, add_data_to_plot, add_decision_boundary
 from ml.supervised.classification.tree import DecisionTreeClassifier
-from ml.utils.metrics import accuracy_score, precision_score, recall_score
+from ml.supervised.classification.naive_bayes import GaussianNB
 
 st.set_page_config(layout='wide')
 st.title('Classification :bar_chart:')
@@ -47,16 +48,19 @@ col_model, col_model_info = st.columns(2, gap='large')
 with col_model:
 
     DECISION_TREE = 'Decision tree'
+    NAIVE_BAYES = 'Gaussian naive Bayes'
 
     model_option = st.selectbox(
         'Select a model',
-        (DECISION_TREE,),
+        (DECISION_TREE, NAIVE_BAYES),
     )
-    max_depth = st.slider('Select the maximum depth', 0, 10, 5)
-    min_samples_split = st.slider('Select the minimum number of samples required to split a node', 0, 5, 2)
     if model_option == DECISION_TREE:
+        max_depth = st.slider('Select the maximum depth', 0, 10, 5)
+        min_samples_split = st.slider('Select the minimum number of samples required to split a node', 0, 5, 2)
         model = DecisionTreeClassifier(max_depth=max_depth, min_samples_split=min_samples_split)
-        model.fit(X_train, y_train)
+    elif model_option == NAIVE_BAYES:
+        model = GaussianNB()
+    model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
 with col_model_info:

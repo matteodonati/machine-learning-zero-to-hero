@@ -76,7 +76,7 @@ class DecisionTreeClassifier():
 
     def fit(self, X, y):
         """
-        Fits the decision tree to the data.
+        Fits the model to the data.
         """
         self.root = self._build(np.column_stack((X, y)))
 
