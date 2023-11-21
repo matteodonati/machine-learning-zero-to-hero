@@ -4,10 +4,10 @@ class GaussianNB():
     """
     Gaussian Naive Bayes model.
     """
-    def __init__(self, classes=None, priors=None, dist=None):
-        self.classes = classes
-        self.priors = priors
-        self.dist = dist
+    def __init__(self):
+        self.classes = None
+        self.priors = None
+        self.dist = None
         self.pdf = lambda x, mean, std : (1 / (np.sqrt(2 * np.pi) * std)) * np.exp(-((x - mean)**2 / (2 * std**2)))
 
     def _compute_priors(self, y):

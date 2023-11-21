@@ -4,19 +4,24 @@ st.set_page_config(layout='centered')
 st.title('Documentation :page_facing_up:')
 
 CLASSIFICATION_TREE = 'Classification tree'
+NAIVE_BAYES = 'Gaussian naive Bayes'
 
 option = st.selectbox(
     'Select a documentation page',
-    (CLASSIFICATION_TREE,),
+    (CLASSIFICATION_TREE, NAIVE_BAYES),
     index=None,
 )
+
+latex_script = """
+    
+"""
 
 if option == CLASSIFICATION_TREE:
     st.markdown(
         """
         ---
         
-        ## Classification Tree &nbsp; <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/classification/tree.py" style="font-size: 15px">[source]</a>
+        ## Classification Tree <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/classification/tree.py" style="font-size: 15px">[source]</a>
 
         A decision tree for classification problems is a predictive model that maps features 
         (input variables) to outcomes (classes or labels) by recursively splitting 
@@ -251,6 +256,206 @@ if option == CLASSIFICATION_TREE:
                 return self.make_prediction(x, tree.left)
             else:
                 return self.make_prediction(x, tree.right)
+        ```
+        """,
+        unsafe_allow_html=True
+    )
+elif option == NAIVE_BAYES:
+    st.markdown(
+        """
+        <script
+            src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+            type="text/javascript">
+        </script>
+        ---
+        
+        ## Gaussian Naive Bayes <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/classification/naive_bayes.py" style="font-size: 15px">[source]</a>
+        
+        The Gaussian Naive Bayes algorithm is a probabilistic classification 
+        model based on Bayes' theorem with the assumption of independence between 
+        features. Bayes' theorem states that
+        """,
+        unsafe_allow_html=True
+    )
+    st.latex(r"""
+        P(c_k \vert \mathbf{x}) = \frac{P(c_k) P(\mathbf{x} \vert c_k)}{P(\mathbf{x})}
+    """)
+    st.markdown(
+        """
+        where $$c_k$$ is the $$k$$-th class in a vector $$C$$ of possible classes, 
+        and $$\mathbf{x}$$ is an input sample (i.e., a vector of features). Here,
+        $$P(c_k)$$ is the *prior* for class $$c_k$$, $$P(\mathbf{x} | c_k)$$ is 
+        called *likelihood* and defines the probability of observing $$\mathbf{x}$$ 
+        given class $$c_k$$, $$P(\mathbf{x})$$ is the *evidence* for $$\mathbf{x}$$, 
+        and $$P(c_k | \mathbf{x})$$ is the *posterior* probability of observing class
+        $$c_k$$ given the input $$\mathbf{x}$$. In this setting, there is no interest
+        in the evidence, since it does not depend on $$C$$: 
+        """,
+        unsafe_allow_html=True
+    )
+    st.latex(r"""
+        P(c_k \vert \mathbf{x}) \propto P(c_k) P(\mathbf{x} \vert c_k)
+    """)
+    st.markdown(
+        """
+        Moreover, using the definition of conditional probability and applying the
+        chain rule, $$P(c_k) P(\mathbf{x} | c_k)$$ can be expressed as
+        """,
+        unsafe_allow_html=True
+    )
+    st.latex(r"""
+        \begin{align*}
+            P(c_k) P(\mathbf{x} \vert c_k) &= P(\mathbf{x}, c_k) \\
+             &= P(x_1, x_2, \dots, c_k) \\
+             &= P(x_1 \vert x_2, \dots, x_n, c_k) P(x_2, \dots, x_n, c_k) \\
+             &= \dots \\
+             &= P(x_1 \vert x_2, \dots, x_n, c_k) P(x_2 \vert x_3, \dots, x_n, c_k) \cdots P(x_n \vert c_k) P(c_k)
+        \end{align*}
+    """)
+    st.markdown(
+        """
+        Naive Bayes makes the important assumption of independent features. Thus,
+        $$P(x_i | x_{i + 1}, \dots x_n, c_k) $$ $$= P(x_i | c_k) $$, allowing
+        the posterior probability to be computed as
+        """,
+        unsafe_allow_html=True
+    )
+    st.latex(r"""
+        \begin{align*}
+            P(c_k \vert \mathbf{x}) &\propto P(\mathbf{x}, c_k) \\
+             & \;\;\;\; = P(c_k) P(x_1 \vert c_k) \cdots P(x_n \vert c_k) \\
+             & \;\;\;\; = P(c_k) \prod_{i=1}^{n} P(x_i \vert c_k)
+        \end{align*}
+    """)
+    st.markdown(
+        """
+        In other words, given an input sample $$\mathbf{x}$$, the predicted class
+        $$\hat{y}$$ will be computed as
+        """,
+        unsafe_allow_html=True
+    )
+    st.latex(r"""
+        \hat{y} = \operatorname{argmax}_{k \in 1, \dots, K} P(c_k) \prod_{i=1}^{n} P(x_i \vert c_k)
+    """)
+    st.markdown(
+        """
+        In the case of Gaussian naive Bayes, the probability density of value $$v$$
+        given a class $$c_k$$ is computed as
+        """,
+        unsafe_allow_html=True
+    )
+    st.latex(r"""
+        P(x = v \vert c_k) = \frac{1}{\sqrt{2 \pi \sigma^2_k}} \exp\left(\frac{(v - \mu_k)^2}{2 \sigma^2_k}\right)
+    """)
+    st.markdown(
+        """
+        where $$\mu_k$$ and $$\sigma_k$$ have to be computed for each feature,
+        considering training data.
+
+        The following code defines the class required to implement Gaussian naive 
+        Bayes. This documentation will provide an overview of how the proposed 
+        implementation works and describe the key components of the code.
+
+        ### `GaussianNB` Class
+
+        The `GaussianNB` class implements the Gaussian naive Bayes algorithm.
+        It includes the following methods and attributes:
+
+        #### Constructor
+
+        The constructor initializes the class defining different attributes: 
+        - `classes`, the list of possible classes. 
+        - `priors`, prior probability for each class.
+        - `dist`, $$\mu$$ and $$\sigma$$ of the different distributions.
+        - `pdf`, the probability density function of the Gaussian distribution.
+
+        ```python
+        def __init__(self):
+            self.classes = None
+            self.priors = None
+            self.dist = None
+            self.pdf = lambda x, mean, std : (1 / (np.sqrt(2 * np.pi) * std)) * np.exp(-((x - mean)**2 / (2 * std**2)))
+        ```
+        
+        #### `_compute_priors` Method
+
+        This method computes the prior probabilities for each class based on the 
+        frequency of class occurrences in the training labels.
+
+        ```python
+        def _compute_priors(self, y):
+            self.priors = dict((c, 0.0) for c in self.classes)
+            for c in self.classes:
+                self.priors[c] = len(np.where(y == c)[0]) / len(y)
+        ```
+
+        #### `_compute_dist` Method
+
+        This method computes the mean and standard deviation for each feature in 
+        each class, forming the parameters of Gaussian distributions.
+
+        ```python
+        def _compute_dist(self, X, y):
+            self.dist = dict((c, {'mean': np.zeros(X.shape[-1]), 'std': np.zeros(X.shape[-1])}) for c in self.classes)
+            for c in self.classes:
+                self.dist[c]['mean'] = np.mean(X[y == c], axis=0)
+                self.dist[c]['std'] = np.std(X[y == c], axis=0)
+        ```
+
+        #### `_compute_likelihoods` Method
+
+        This method computes the likelihood probabilities for each class given 
+        a specific data point.
+
+        ```python
+        def _compute_likelihoods(self, x):
+            likelihoods = dict((c, 1.0) for c in self.classes)
+            for c in self.classes:
+                for i in range(len(x)):
+                    likelihoods[c] *= self.pdf(x[i], self.dist[c]['mean'][i], self.dist[c]['std'][i])
+            return likelihoods
+        ```
+
+        #### `_compute_posteriors` Method
+
+        This method computes the posterior probabilities for each class based 
+        on the likelihoods and priors. The logarithm function is used to
+        prevent underflows.
+
+        ```python
+        def _compute_posteriors(self, likelihoods):
+            return dict((c, np.log(likelihoods[c] * self.priors[c])) for c in self.classes)
+        ```
+
+        #### `fit` Method
+
+        This method fits the Gaussian Naive Bayes model to the training data by 
+        setting possible class labels, computing priors, and distribution parameters 
+        if not provided.
+
+        ```python
+        def fit(self, X, y):
+            if self.classes == None:
+                self.classes = np.unique(y)
+            if self.priors == None:
+                self._compute_priors(y)
+            if self.dist == None:
+                self._compute_dist(X, y)
+        ```
+
+        #### `predict` Method
+
+        This method predicts class labels for a given set of data points using 
+        likelihoods and posteriors.
+
+        ```python
+        def predict(self, X):
+            y_pred = []
+            for row in X:
+                likelihoods = self._compute_likelihoods(row)
+                posteriors = self._compute_posteriors(likelihoods)
+                y_pred.append(max(posteriors, key=posteriors.get))
+            return y_pred
         ```
         """,
         unsafe_allow_html=True
