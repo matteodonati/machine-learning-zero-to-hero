@@ -54,4 +54,3 @@ def information_gain(y_parent, y_left, y_right, criterion='gini'):
     """
     f = gini_impurity if criterion == 'gini' else entropy
     return f(y_parent) - (len(y_left) / len(y_parent)) * f(y_left) - (len(y_right) / len(y_parent)) * f(y_right)
-

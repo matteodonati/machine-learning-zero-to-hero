@@ -4,6 +4,7 @@ from ml.utils.data import train_test_split
 from ml.utils.metrics import accuracy_score, precision_score, recall_score
 from ml.supervised.classification.tree import DecisionTreeClassifier
 from ml.supervised.classification.naive_bayes import GaussianNB
+from ml.supervised.classification.neighbors import KNeighborsClassifier
 
 np.random.seed(0)
 
@@ -15,7 +16,8 @@ print(X_train.shape, X_test.shape)
 
 print('Fitting the model to train data.')
 #model = DecisionTreeClassifier(max_depth=10)
-model = GaussianNB()
+#model = GaussianNB()
+model = KNeighborsClassifier()
 model.fit(X_train, y_train)
 
 print('Predicting labels for test data.')

@@ -5,6 +5,7 @@ from ml.utils.metrics import accuracy_score, precision_score, recall_score
 from ui.utils.plot import create_plot, add_data_to_plot, add_decision_boundary
 from ml.supervised.classification.tree import DecisionTreeClassifier
 from ml.supervised.classification.naive_bayes import GaussianNB
+from ml.supervised.classification.neighbors import KNeighborsClassifier
 
 st.set_page_config(layout='wide')
 st.title('Classification :bar_chart:')
@@ -49,10 +50,11 @@ with col_model:
 
     DECISION_TREE = 'Decision tree'
     NAIVE_BAYES = 'Gaussian naive Bayes'
+    KNN = 'K-Nearest Neighbors'
 
     model_option = st.selectbox(
         'Select a model',
-        (DECISION_TREE, NAIVE_BAYES),
+        (DECISION_TREE, NAIVE_BAYES, KNN),
     )
     if model_option == DECISION_TREE:
         max_depth = st.slider('Select the maximum depth', 0, 10, 5)
@@ -60,6 +62,9 @@ with col_model:
         model = DecisionTreeClassifier(max_depth=max_depth, min_samples_split=min_samples_split)
     elif model_option == NAIVE_BAYES:
         model = GaussianNB()
+    elif model_option == KNN:
+        n_neighbors = st.slider('Select the number of neighbors', 1, 10, 5)
+        model = KNeighborsClassifier(n_neighbors=n_neighbors)
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
