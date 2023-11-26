@@ -6,6 +6,7 @@ from ui.utils.plot import create_plot, add_data_to_plot, add_decision_boundary
 from ml.supervised.classification.tree import DecisionTreeClassifier
 from ml.supervised.classification.naive_bayes import GaussianNB
 from ml.supervised.classification.neighbors import KNeighborsClassifier
+from ml.supervised.classification.linear import LogisticRegression
 
 st.set_page_config(layout='wide')
 st.title('Classification :bar_chart:')
@@ -28,7 +29,7 @@ with col_data:
         noise = st.slider('Select the amount of noise', 0.0, 0.1, 0.05)
         X, y = make_moons(n_samples=n_samples, noise=noise)
     elif data_option == BLOBS:
-        centers = st.slider('Select the number of clusters', 0, 5, 3)
+        centers = st.slider('Select the number of clusters', 0, 5, 2)
         X, y = make_blobs(n_samples=n_samples, centers=centers)
 
     normalize_data(X)
@@ -50,11 +51,12 @@ with col_model:
 
     DECISION_TREE = 'Decision tree'
     NAIVE_BAYES = 'Gaussian naive Bayes'
-    KNN = 'K-Nearest Neighbors'
+    KNN = 'K-nearest neighbors'
+    LR = 'Logistic regression'
 
     model_option = st.selectbox(
         'Select a model',
-        (DECISION_TREE, NAIVE_BAYES, KNN),
+        (DECISION_TREE, NAIVE_BAYES, KNN, LR),
     )
     if model_option == DECISION_TREE:
         max_depth = st.slider('Select the maximum depth', 0, 10, 5)
@@ -65,6 +67,10 @@ with col_model:
     elif model_option == KNN:
         n_neighbors = st.slider('Select the number of neighbors', 1, 10, 5)
         model = KNeighborsClassifier(n_neighbors=n_neighbors)
+    elif model_option == LR:
+        n_epochs = st.slider('Select the number of training epochs', 50, 150, 100)
+        lr = st.slider('Select the learning rate', 0.0001, 0.01, 0.001)
+        model = LogisticRegression(n_epochs=n_epochs, lr=lr)
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
