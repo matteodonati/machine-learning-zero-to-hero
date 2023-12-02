@@ -7,6 +7,7 @@ from ml.supervised.classification.tree import DecisionTreeClassifier
 from ml.supervised.classification.naive_bayes import GaussianNB
 from ml.supervised.classification.neighbors import KNeighborsClassifier
 from ml.supervised.classification.linear import LogisticRegression
+from ml.supervised.classification.svm import SVC
 
 st.set_page_config(layout='wide')
 st.title('Classification :bar_chart:')
@@ -53,10 +54,11 @@ with col_model:
     NAIVE_BAYES = 'Gaussian naive Bayes'
     KNN = 'K-nearest neighbors'
     LR = 'Logistic regression'
+    SVM = 'Support vector machine'
 
     model_option = st.selectbox(
         'Select a model',
-        (DECISION_TREE, NAIVE_BAYES, KNN, LR),
+        (DECISION_TREE, NAIVE_BAYES, KNN, LR, SVM),
     )
     if model_option == DECISION_TREE:
         max_depth = st.slider('Select the maximum depth', 0, 10, 5)
@@ -68,9 +70,13 @@ with col_model:
         n_neighbors = st.slider('Select the number of neighbors', 1, 10, 5)
         model = KNeighborsClassifier(n_neighbors=n_neighbors)
     elif model_option == LR:
-        n_epochs = st.slider('Select the number of training epochs', 50, 150, 100)
-        lr = st.slider('Select the learning rate', 0.0001, 0.01, 0.001)
+        n_epochs = st.slider('Select the number of training iterations', 50, 150, 100)
+        lr = st.slider('Select the learning rate value', min_value=0.001, step=0.001, max_value=0.01, value=0.005, format='%f')
         model = LogisticRegression(n_epochs=n_epochs, lr=lr)
+    elif model_option == SVM:
+        n_epochs = st.slider('Select the number of training iterations', 500, 1500, 1000)
+        lr = st.slider('Select the learning rate value', min_value=0.01, step=0.01, max_value=0.1, value=0.05, format='%f')
+        model = SVC(lr=lr, n_epochs=n_epochs)
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
