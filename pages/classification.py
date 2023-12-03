@@ -1,5 +1,5 @@
 import streamlit as st
-from sklearn.datasets import make_moons, make_blobs
+from sklearn.datasets import make_moons, make_blobs, make_circles
 from ml.utils.data import train_test_split, normalize_data
 from ml.utils.metrics import accuracy_score, precision_score, recall_score
 from ui.utils.plot import create_plot, add_data_to_plot, add_decision_boundary
@@ -19,10 +19,11 @@ with col_data:
 
     MOONS = 'Moons'
     BLOBS = 'Blobs'
+    CIRCLES = 'Circles'
 
     data_option = st.selectbox(
         'Select a dataset',
-        (MOONS, BLOBS),
+        (MOONS, BLOBS, CIRCLES),
     )
 
     n_samples = st.slider('Select the number of samples', 0, 1000, 500, step=10)
@@ -32,6 +33,9 @@ with col_data:
     elif data_option == BLOBS:
         centers = st.slider('Select the number of clusters', 0, 5, 2)
         X, y = make_blobs(n_samples=n_samples, centers=centers)
+    elif data_option == CIRCLES:
+        noise = st.slider('Select the amount of noise', 0.0, 0.1, 0.05)
+        X, y = make_circles(n_samples=n_samples, noise=noise)
 
     normalize_data(X)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20)

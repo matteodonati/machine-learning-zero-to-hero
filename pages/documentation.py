@@ -3,20 +3,29 @@ import streamlit as st
 st.set_page_config(layout='centered')
 st.title('Documentation :page_facing_up:')
 
-CLASSIFICATION_TREE = 'Classification tree'
+DECISION_TREE = 'Decition tree'
 NAIVE_BAYES = 'Gaussian naive Bayes'
+KNN = 'K-nearest neighbors'
+LR = 'Logistic regression'
+SVM = 'Support vector machine'
 
 option = st.selectbox(
     'Select a documentation page',
-    (CLASSIFICATION_TREE, NAIVE_BAYES),
+    (DECISION_TREE, NAIVE_BAYES, KNN, LR, SVM),
     index=None,
 )
 
-latex_script = """
-    
-"""
+st.markdown(
+    """
+    <script
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+        type="text/javascript">
+    </script>
+    """,
+    unsafe_allow_html=True
+)
 
-if option == CLASSIFICATION_TREE:
+if option == DECISION_TREE:
     st.markdown(
         """
         ---
@@ -52,13 +61,13 @@ if option == CLASSIFICATION_TREE:
 
         ```python
         class Node():
-        def __init__(self, feature=None, threshold=None, left=None, right=None, gain=None, value=None):
-            self.feature = feature
-            self.threshold = threshold
-            self.left = left
-            self.right = right
-            self.gain = gain
-            self.value = value
+            def __init__(self, feature=None, threshold=None, left=None, right=None, gain=None, value=None):
+                self.feature = feature
+                self.threshold = threshold
+                self.left = left
+                self.right = right
+                self.gain = gain
+                self.value = value
         ```
 
         ### `DecisionTreeClassifier` Class
@@ -73,10 +82,11 @@ if option == CLASSIFICATION_TREE:
         of samples required to split a node).
 
         ```python
-        def __init__(self, max_depth=2, min_samples_split=2):
-            self.root = None
-            self.max_depth = max_depth
-            self.min_samples_split = min_samples_split
+        class DecisionTreeClassifier:
+            def __init__(self, max_depth=2, min_samples_split=2):
+                self.root = None
+                self.max_depth = max_depth
+                self.min_samples_split = min_samples_split
         ```
 
         #### `_best_split` Method
@@ -263,10 +273,6 @@ if option == CLASSIFICATION_TREE:
 elif option == NAIVE_BAYES:
     st.markdown(
         """
-        <script
-            src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
-            type="text/javascript">
-        </script>
         ---
         
         ## Gaussian Naive Bayes <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/classification/naive_bayes.py" style="font-size: 15px">[source]</a>
@@ -370,11 +376,12 @@ elif option == NAIVE_BAYES:
         - `pdf`, the probability density function of the Gaussian distribution.
 
         ```python
-        def __init__(self):
-            self.classes = None
-            self.priors = None
-            self.dist = None
-            self.pdf = lambda x, mean, std : (1 / (np.sqrt(2 * np.pi) * std)) * np.exp(-((x - mean)**2 / (2 * std**2)))
+        class GaussianNB:
+            def __init__(self):
+                self.classes = None
+                self.priors = None
+                self.dist = None
+                self.pdf = lambda x, mean, std : (1 / (np.sqrt(2 * np.pi) * std)) * np.exp(-((x - mean)**2 / (2 * std**2)))
         ```
         
         #### `_compute_priors` Method
@@ -457,6 +464,100 @@ elif option == NAIVE_BAYES:
                 y_pred.append(max(posteriors, key=posteriors.get))
             return y_pred
         ```
+        """,
+        unsafe_allow_html=True
+    )
+elif option == KNN:
+    st.markdown(
+        """
+        ---
+
+        ## $$k$$-Nearest Neighbors <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/classification/neighbors.py" style="font-size: 15px">[source]</a>
+
+        The $$k$$-nearest neighbors ($$k$$NN) algorithm is a simple and effective supervised learning 
+        algorithm used for classification and regression. It classifies a data point based on 
+        the majority class among its $$k$$-nearest neighbors. The following code defines the class
+        required to implement $$k$$NN. This documentation will provide an overview of how the proposed 
+        implementation works and describe the key components of the code.
+
+        ### `KNeighborsClassifier` Class
+
+        The `KNeighborsClassifier` class implements the kNN algorithm for classification. Let's go 
+        through the key components of the code.
+
+        #### Constructor
+
+        Initializes the $$k$$NN classifier with the number of neighbors to consider (`n_neighbors`).
+
+        ```python
+        class KNeighborsClassifier:
+            def __init__(self, n_neighbors=5):
+                self.n_neighbors = n_neighbors
+                self.X_train = None
+                self.y_train = None
+                self.labels = None
+        ```
+
+        #### `fit` Method
+
+        Fits the $$k$$NN model to the provided training data. This algorithm is considered to
+        be a *lazy* algorithm, meaning that all computation occurs at test time.
+
+        ```python
+        def fit(self, X, y):
+            self.X_train = X
+            self.y_train = y
+            self.labels = np.unique(self.y_train)
+        ```
+
+        #### `predict` Method
+
+        Predicts class labels for the given data points. 
+        
+        - This method first computes the Euclidean distance between each point in X and all 
+        points in the training data:
+        
+        ```python
+        def predict(self, X):
+            y_pred = []
+            dist = np.array([[np.linalg.norm(p - q) for q in self.X_train] for p in X])
+        ```
+
+        - It then identifies the indices of the $$k$$-nearest neighbors for each point, 
+        and counts the occurrences of each class label among the neighbors:
+
+        ```python
+        neighbors_idx = np.argpartition(dist, self.n_neighbors)
+        for i in range(neighbors_idx.shape[0]):
+            counts = dict((c, 0) for c in self.labels)
+            neighbors_labels = self.y_train[neighbors_idx[i, :self.n_neighbors]]
+            for j in range(neighbors_labels.shape[0]):
+                counts[neighbors_labels[j]] += 1
+        ```
+        
+        - Lastly, it predicts the class label with the maximum count for each point:
+
+        ```python
+        y_pred.append(max(counts, key=counts.get))
+        ```
+        """,
+        unsafe_allow_html=True
+    )
+elif option == LR:
+    st.markdown(
+        """
+        ---
+
+        ## Logistic Regression <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/classification/linear.py" style="font-size: 15px">[source]</a>
+        """,
+        unsafe_allow_html=True
+    )
+elif option == SVM:
+    st.markdown(
+        """
+        ---
+
+        ## Support Vector Machine <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/classification/svm.py" style="font-size: 15px">[source]</a>
         """,
         unsafe_allow_html=True
     )
