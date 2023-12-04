@@ -27,9 +27,9 @@ class LogisticRegression():
         Computes the gradient of the loss function and updates the model.
         """
         dLdw = np.matmul((y_pred - y_true), X)
-        dbdw = np.sum((y_pred - y_true))
+        dLdb = np.sum((y_pred - y_true))
         self.weights = self.weights - self.lr * dLdw
-        self.bias = self.bias - self.lr * dbdw
+        self.bias = self.bias - self.lr * dLdb
 
     def fit(self, X, y):
         """

@@ -476,9 +476,11 @@ elif option == KNN:
 
         The $$k$$-nearest neighbors ($$k$$NN) algorithm is a simple and effective supervised learning 
         algorithm used for classification and regression. It classifies a data point based on 
-        the majority class among its $$k$$-nearest neighbors. The following code defines the class
-        required to implement $$k$$NN. This documentation will provide an overview of how the proposed 
-        implementation works and describe the key components of the code.
+        the majority class among its $$k$$-nearest neighbors. 
+        
+        The following code defines the class required to implement $$k$$NN. This documentation will 
+        provide an overview of how the proposed implementation works and describe the key components 
+        of the code.
 
         ### `KNeighborsClassifier` Class
 
@@ -549,6 +551,130 @@ elif option == LR:
         ---
 
         ## Logistic Regression <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/classification/linear.py" style="font-size: 15px">[source]</a>
+
+        Logistic regression is a method used for binary classification problems, where 
+        the goal is to predict the probability of an instance belonging to a particular 
+        class. Despite its name, logistic regression is used for classification rather 
+        than regression tasks.
+
+        The logistic function, also known as the sigmoid function, transforms any real-valued 
+        number into a value between $$0$$ and $$1$$. In logistic regression, this function is applied 
+        to a linear combination of the input features creating a model that outputs probabilities: 
+        """,
+        unsafe_allow_html=True
+    )
+    st.latex(r"""
+        \sigma(z) = \sigma(\mathbf{w} \cdot \mathbf{x} + b) = 
+             \begin{cases}
+             \dfrac{1}{(1 + \exp(-(\mathbf{w} \cdot \mathbf{x} + b)))} & \text{if $(\mathbf{w} \cdot \mathbf{x} + b) \geq 0$} \\[4mm]
+             \dfrac{\exp(\mathbf{w} \cdot \mathbf{x} + b)}{(1 + \exp(\mathbf{w} \cdot \mathbf{x} + b))} & \text{otherwise}
+             \end{cases}
+    """)
+    st.markdown(
+        """
+        The predicted probability can then be converted into a binary outcome by applying 
+        a threshold (commonly $$0.5$$). Instances with a probability greater than or equal 
+        to the threshold are assigned to one class, while those below the threshold are assigned 
+        to the other class.
+
+        The following code defines the class required to implement logistic regression. This 
+        documentation will provide an overview of how the proposed implementation works and 
+        describe the key components of the code.
+
+        ### `LogisticRegression` Class
+
+        The `LogisticRegression` class implements a simple logistic regression model.
+
+        #### Constructor
+
+        Initializes the logistic regression model with the following parameters:
+
+        - `weights`, the weights of the model.
+        - `bias`, the bias of the model.
+        - `n_epochs`, the number of training epochs.
+        - `lr`, the learning rate.
+
+        ```python
+        class LogisticRegression():
+            def __init__(self, n_epochs=100, lr=1e-3):
+                self.weights = None
+                self.bias = 0.0
+                self.n_epochs = n_epochs
+                self.lr = lr
+        ```
+        
+        #### `_sigmoid` Method
+
+        Implements a stable version of the sigmoid activation function to prevent numerical 
+        instability.
+
+        ```python
+        def _sigmoid(self, Z):
+            return np.array([1 / (1 + np.exp(-z)) if z >= 0 else np.exp(z) / (1 + np.exp(z)) for z in Z])
+        ```
+
+        #### `_loss` Method
+
+        Implements a stable version of the binary cross-entropy loss function. Binary cross-entropy
+        is defined as follows:
+        """,
+        unsafe_allow_html=True
+    )
+    st.latex(r"""
+        \mathcal{L}_{BCE}(\mathbf{y}, \hat{\mathbf{y}}) = \frac{1}{N} \sum_{i=0}^{N} \mathbf{y} \log(\hat{\mathbf{y}}) + (1 - \mathbf{y}) \log(1 - \hat{\mathbf{y}})
+    """)
+    st.markdown(
+        """
+        where $$N$$ is the number of samples.
+
+        ```python
+        def _loss(self, y_true, y_pred, eps=1e-9):
+            return -1.0 * np.mean(y_true * np.log(y_pred + eps) + (1 - y_true) * np.log(1 - y_pred + eps))
+        ```
+
+        #### `_update` Method
+
+        Computes the gradient of the loss function and updates the model parameters using 
+        gradient descent.
+
+        ```python
+        def _update(self, X, y_true, y_pred):
+            dLdw = np.matmul((y_pred - y_true), X)
+            dLdb = np.sum((y_pred - y_true))
+            self.weights = self.weights - self.lr * dLdw
+            self.bias = self.bias - self.lr * dLdb
+        ```
+
+        In particular, `dLdw` and `dLdb` are the partial derivatives of the loss function with 
+        respect to the weights and the bias, respectively.
+
+        #### `fit` Method
+
+        Fits the logistic regression model to the provided training data:
+
+        - It first computes the activation z of the model.
+        - It then predicts output probabilities using the sigmoid function.
+        - It lastly update the model's parameters using gradient descent.
+
+        ```python
+        def fit(self, X, y):
+            self.weights = np.zeros((X.shape[1]))
+            for _ in range(self.n_epochs):
+                z = np.matmul(self.weights, X.transpose()) + self.bias
+                y_pred = self._sigmoid(z)
+                self._update(X, y, y_pred)
+        ```
+
+        #### `predict` Method
+
+        Predicts class labels for the given data points.
+
+        ```python
+        def predict(self, X):
+            z = np.matmul(self.weights, X.transpose()) + self.bias
+            y_pred = self._sigmoid(z)
+            return [1 if p > 0.5 else 0 for p in y_pred]
+        ```
         """,
         unsafe_allow_html=True
     )
