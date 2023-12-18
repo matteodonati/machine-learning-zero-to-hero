@@ -684,6 +684,154 @@ elif option == SVM:
         ---
 
         ## Support Vector Machine <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/classification/svm.py" style="font-size: 15px">[source]</a>
+
+        Support Vector Machines (SVMs) are a set of supervised learning methods used for 
+        classification, regression, and outlier detection. An SVM with an RBF kernel aims 
+        to find a decision boundary in a transformed feature space where the classes can 
+        be separated by a hyperplane. The decision function is given by:
+
+        """,
+        unsafe_allow_html=True
+    )
+    st.latex(r"""
+        f(x) = \operatorname{sign}\left(\sum_{i = 1}^n \alpha_i y_i K(x_i, x) + b \right)
+    """)
+    st.markdown(
+        """
+        where:
+
+        - $$K$$ is the RBF kernel function.
+        - $$\\alpha_i$$ are the Langrange multipliers.
+        - $$y_i$$ are the class labels.
+        - $$b$$ is the bias term.
+        - $$n$$ is the number of support vector.
+
+        The objective is to maximize the margin between the two classes while penalizing 
+        misclassifications, controlled by the hyperparameter C. The optimization problem 
+        is solved using an iterative approach, typically SMO, to find the optimal values of
+        $$\\alpha$$ and $$b$$.
+
+        This documentation covers the implementation of an SVM classifier using the RBF 
+        kernel.
+
+        ### `SVC` Class
+
+        The `SVC` (Support Vector Classifier) class implements an SVM classifier with an 
+        RBF kernel. Below is a detailed explanation of its components.
+
+        #### Constructor
+
+        The constructor initializes the SVM classifier with hyperparameters and the 
+        Gaussian kernel function.
+
+        ```python
+        class SVC:
+            def __init__(self, sigma=0.1, n_epochs=1000, lr=0.001):
+                self.alpha = None
+                self.b = 0
+                self.C = 1
+                self.sigma = sigma
+                self.n_epochs = n_epochs
+                self.lr = lr
+                self.kernel = self._gaussian_kernel
+        ```
+
+        In particular:
+
+        - `sigma` controls the width of the Gaussian kernel.
+        - `n_epochs` is the number of iterations for training.
+        - `lr` is the learning rate.
+        - `C` ($$C$$) is the regularization parameter. The strength of regularization is inversely 
+        proportional to such parameter.
+        - `alpha` are the Lagrange multipliers, used for optimization.
+        - `b` is the intercept term in the decision function.
+        - `kernel` is the kernel function used in the algorithm.
+
+        #### `_gaussian_kernel` Method
+
+        This method implements the Gaussian (RBF) kernel.
+
+        ```python
+        def _gaussian_kernel(self, X, Z):
+            return np.exp(-(1 / self.sigma ** 2) * np.linalg.norm(X[:, np.newaxis] - Z[np.newaxis, :], axis=2) ** 2)
+        ```
+
+        The kernel computes the exponential of the negative squared Euclidean distance 
+        between vectors, normalized by `sigma`.
+
+        #### `fit` Method
+        
+        The `fit` method trains the SVM model on the provided dataset. It takes the feature 
+        matrix `X` and the label vector `y` as inputs and adjusts the model's parameters based 
+        on these inputs.
+
+        First,
+
+        ```python
+        def fit(self, X, y):
+            y = np.where(y == 0, -1, 1)
+        ```
+
+        converts the label vector `y` so that its elements are either $$-1$$ or $$1$$. This is a 
+        standard practice in SVM, as it simplifies the mathematical formulation of the problem.
+
+        Then,
+
+        ```python
+        self.alpha = np.random.random(X.shape[0])
+        self.b = 0
+        self.ones = np.ones(X.shape[0])
+        ```
+
+        initializes the Lagrange multipliers $$\\alpha$$ with random values and sets the bias term 
+        $$b$$ to zero. It also creates a helper vector, consisting of ones, which is used in the 
+        gradient calculation.
+
+        ```python
+        y_mul_kernel = np.outer(y, y) * self.kernel(X, X)
+        ```
+
+        Computes the kernel matrix once and stores it in `y_mul_kernel`. This matrix represents 
+        the pairwise kernel calculations between all samples in `X`. The matrix is scaled by 
+        the outer product of the label vector with itself, which is a common step in SVM calculations.
+
+        ```python
+        for _ in range(self.n_epochs):
+            gradient = self.ones - y_mul_kernel.dot(self.alpha)
+            self.alpha += self.lr * gradient
+            self.alpha = np.clip(self.alpha, 0, self.C)
+        ```
+
+        Iteratively adjusts the values of $$\\alpha$$ for a specified number of epochs. The gradient of 
+        the objective function with respect to $$\\alpha$$ is computed. This gradient is used to update 
+        $$\\alpha$$. The values of $$\\alpha$$ are then clipped to ensure they remain within the $$[0, C]$$ 
+        interval, as per the box constraints of the SVM optimization problem.
+
+        Lastly,
+
+        ```python
+        alpha_index = np.where((self.alpha > 0) & (self.alpha < self.C))[0]
+        b_list = [y[index] - (self.alpha * y).dot(self.kernel(X, X[index])) for index in alpha_index]
+        self.b = np.mean(b_list)
+        ```
+
+        identifies support vectors (those for which $$\\alpha$$ is neither $$0$$ nor $$C$$) and uses them to compute 
+        the bias term $$b$$. For each support vector, calculates an estimate of $$b$$. This is done by 
+        considering the conditions that support vectors should satisfy in the optimal solution.
+        The final bias term is set as the mean of these estimates, providing a robust estimate 
+        even in the presence of noise.
+
+        #### `predict` Method
+
+        The `predict` method makes predictions for new data.
+
+        ```python
+        def predict(self, X):
+            return np.where(np.sign((self.alpha * self.y).dot(self.kernel(self.X, X)) + self.b) == -1, 0, 1).tolist()
+        ```
+
+        Predictions are made based on the sign of the decision function, which involves the learned 
+        $$\\alpha$$, $$b$$, and the kernel function.
         """,
         unsafe_allow_html=True
     )

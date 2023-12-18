@@ -95,32 +95,35 @@ with col_model_info:
 
 st.header('Results')
 col_results, col_results_info = st.columns(2, gap='large')
+if data_option == BLOBS and centers > 2 and (model_option == LR or model_option == SVM):
+    with col_results:
+        st.info(f'{model_option} can\'t solve classification problems with more than two classes.', icon='ℹ️')
+else:
+    with col_results:
+        accuracy = accuracy_score(y_test, y_pred)
+        precision = precision_score(y_test, y_pred)
+        recall = recall_score(y_test, y_pred)
+        st.progress(accuracy, text='Test accuracy: {:.6f}'.format(accuracy))
+        st.progress(precision, text='Test precision: {:.6f}'.format(precision))
+        st.progress(recall, text='Test recall: {:.6f}'.format(recall))
 
-with col_results:
-    accuracy = accuracy_score(y_test, y_pred)
-    precision = precision_score(y_test, y_pred)
-    recall = recall_score(y_test, y_pred)
-    st.progress(accuracy, text='Test accuracy: {:.6f}'.format(accuracy))
-    st.progress(precision, text='Test precision: {:.6f}'.format(precision))
-    st.progress(recall, text='Test recall: {:.6f}'.format(recall))
+        fig_train = create_plot()
+        fig_test = create_plot()
+        add_data_to_plot(fig_train, X_train, y_train, marker_symbol='circle')
+        add_data_to_plot(fig_test, X_test, y_test, marker_symbol='square')
+        add_decision_boundary(fig_train, fig_test, X, model)
 
-    fig_train = create_plot()
-    fig_test = create_plot()
-    add_data_to_plot(fig_train, X_train, y_train, marker_symbol='circle')
-    add_data_to_plot(fig_test, X_test, y_test, marker_symbol='square')
-    add_decision_boundary(fig_train, fig_test, X, model)
+        tab_train, tab_test = st.tabs(['Train', 'Test'])
+        with tab_train:
+            st.plotly_chart(fig_train, use_container_width=True)
+        with tab_test:        
+            st.plotly_chart(fig_test, use_container_width=True)
 
-    tab_train, tab_test = st.tabs(['Train', 'Test'])
-    with tab_train:
-        st.plotly_chart(fig_train, use_container_width=True)
-    with tab_test:        
-        st.plotly_chart(fig_test, use_container_width=True)
-
-with col_results_info:
-    st.markdown(
-        '''
-        Results info
-        - Results info
-        - Results info
-        '''
-    )
+    with col_results_info:
+        st.markdown(
+            '''
+            Results info
+            - Results info
+            - Results info
+            '''
+        )
