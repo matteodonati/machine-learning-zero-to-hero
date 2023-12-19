@@ -15,6 +15,7 @@ def _create_scatter_plot(x, y, color, marker_symbol=None):
             colorscale=['rgb(0, 0, 255)', 'rgb(255, 0, 0)'],
             line=dict(width=1),
         ),
+        showlegend=False
     )
 
 def create_plot():
@@ -26,18 +27,20 @@ def create_plot():
     fig.update_yaxes(showgrid=True)
     return fig
 
-def add_data_to_plot(fig, X, y, marker_symbol='circle'):
+def add_data_to_plot(fig, X, y, marker_symbol='circle', problem_type='classification'):
     """
     Adds data to a plot.
     """
-    scatter = _create_scatter_plot(X[:, 0], X[:, 1], y, marker_symbol=marker_symbol)
+    if problem_type == 'regression':
+        scatter = _create_scatter_plot(X, y, 'rgb(0, 0, 255)', marker_symbol=marker_symbol)
+    else:
+        scatter = _create_scatter_plot(X[:, 0], X[:, 1], y, marker_symbol=marker_symbol)
     fig.add_trace(scatter)
 
 def add_decision_boundary(fig_train, fig_test, X, model):
     """
     Adds a classification decision boundary to the plots.
     """
-
     h = 0.01
     min1, max1 = X[:, 0].min() - 0.1, X[:, 0].max() + 0.1
     min2, max2 = X[:, 1].min() - 0.1, X[:, 1].max() + 0.1
@@ -58,3 +61,23 @@ def add_decision_boundary(fig_train, fig_test, X, model):
     )
     fig_train.add_trace(boundary)
     fig_test.add_trace(boundary)
+
+def add_regression_line(fig, X, model):
+    """
+    Adds a regression line to the plot.
+    """
+    h = 0.01
+    min, max = X.min() - 0.1, X.max() + 0.1
+    x_grid = np.arange(min, max, h)
+    y_pred = np.array(model.predict(x_grid))
+    line = go.Scatter(
+        x=x_grid, 
+        y=y_pred,
+        mode='lines',
+        marker=dict(
+            color='rgb(255, 0, 0)',
+            line=dict(width=1),
+        ),
+        showlegend=False,
+    )
+    fig.add_trace(line)

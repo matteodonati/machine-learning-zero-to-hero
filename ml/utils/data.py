@@ -20,3 +20,11 @@ def normalize_data(X):
     for i in range(X.shape[-1]):
         col = X[:, i]
         X[:, i] = (col - col.min()) / (col.max() - col.min())
+
+def make_sin(n_samples=100, noise=0.0):
+    """
+    Produces a sinusoidal regression problem.
+    """
+    x = np.linspace(-5, 5, num=n_samples)
+    y = np.sin(x) + np.random.normal(scale=noise, size=n_samples)
+    return x, y

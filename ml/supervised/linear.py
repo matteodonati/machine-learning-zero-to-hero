@@ -48,3 +48,36 @@ class LogisticRegression():
         z = np.matmul(self.weights, X.transpose()) + self.bias
         y_pred = self._sigmoid(z)
         return [1 if p > 0.5 else 0 for p in y_pred]
+    
+class LinearRegression():
+    """
+    Linear Regression model.
+    """
+    def __init__(self, n_epochs=2000, lr=1e-3):
+        self.m = 0.0
+        self.c = 0.0
+        self.n_epochs = n_epochs
+        self.lr = lr
+
+    def _update(self, X, y, y_pred):
+        """
+        Computes the gradient of the loss function and updates the model.
+        """
+        dLdm = (-2 / len(X)) * np.sum(X * (y - y_pred))
+        dLdc = (-2 / len(X)) * np.sum(y - y_pred)
+        self.m = self.m - self.lr * dLdm
+        self.c = self.c - self.lr * dLdc
+
+    def fit(self, X, y):
+        """
+        Fits the model to the data.
+        """
+        for _ in range(self.n_epochs):
+            y_pred = self.m * X + self.c
+            self._update(X, y, y_pred)
+
+    def predict(self, X):
+        """
+        Predicts y values for X.
+        """
+        return self.m * X + self.c

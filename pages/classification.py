@@ -3,11 +3,11 @@ from sklearn.datasets import make_moons, make_blobs, make_circles
 from ml.utils.data import train_test_split, normalize_data
 from ml.utils.metrics import accuracy_score, precision_score, recall_score
 from ui.utils.plot import create_plot, add_data_to_plot, add_decision_boundary
-from ml.supervised.classification.tree import DecisionTreeClassifier
-from ml.supervised.classification.naive_bayes import GaussianNB
-from ml.supervised.classification.neighbors import KNeighborsClassifier
-from ml.supervised.classification.linear import LogisticRegression
-from ml.supervised.classification.svm import SVC
+from ml.supervised.tree import DecisionTreeClassifier
+from ml.supervised.naive_bayes import GaussianNB
+from ml.supervised.neighbors import KNeighborsClassifier
+from ml.supervised.linear import LogisticRegression
+from ml.supervised.svm import SVC
 
 st.set_page_config(layout='wide')
 st.title('Classification :bar_chart:')
