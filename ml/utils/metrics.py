@@ -48,10 +48,22 @@ def gini_impurity(y):
     p = counts / len(y)
     return 1 - np.sum(p**2)
 
+def variance(y):
+    """
+    Computes variance.
+    """
+    return np.var(y)
+
 def information_gain(y_parent, y_left, y_right, criterion='gini'):
     """
     Computes information gain.
     """
+    if criterion == 'gini':
+        f = gini_impurity
+    elif criterion == 'entropy':
+        f = entropy
+    elif criterion == 'variance':
+        f = variance
     f = gini_impurity if criterion == 'gini' else entropy
     return f(y_parent) - (len(y_left) / len(y_parent)) * f(y_left) - (len(y_right) / len(y_parent)) * f(y_right)
 

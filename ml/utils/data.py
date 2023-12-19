@@ -27,4 +27,4 @@ def make_sin(n_samples=100, noise=0.0):
     """
     x = np.linspace(-5, 5, num=n_samples)
     y = np.sin(x) + np.random.normal(scale=noise, size=n_samples)
-    return x, y
+    return x.reshape((len(x), 1)), y

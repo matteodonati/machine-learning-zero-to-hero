@@ -54,7 +54,7 @@ col_model, col_model_info = st.columns(2, gap='large')
 
 with col_model:
 
-    DECISION_TREE = 'Decision tree'
+    CLASSIFICATION_TREE = 'Classification tree'
     NAIVE_BAYES = 'Gaussian naive Bayes'
     KNN = 'K-nearest neighbors'
     LR = 'Logistic regression'
@@ -62,9 +62,10 @@ with col_model:
 
     model_option = st.selectbox(
         'Select a model',
-        (DECISION_TREE, NAIVE_BAYES, KNN, LR, SVM),
+        (CLASSIFICATION_TREE, NAIVE_BAYES, KNN, LR, SVM),
     )
-    if model_option == DECISION_TREE:
+    
+    if model_option == CLASSIFICATION_TREE:
         max_depth = st.slider('Select the maximum depth', 0, 10, 5)
         min_samples_split = st.slider('Select the minimum number of samples required to split a node', 0, 5, 2)
         model = DecisionTreeClassifier(max_depth=max_depth, min_samples_split=min_samples_split)
@@ -81,6 +82,7 @@ with col_model:
         n_epochs = st.slider('Select the number of training iterations', 500, 1500, 1000)
         lr = st.slider('Select the learning rate value', min_value=0.01, step=0.01, max_value=0.1, value=0.05, format='%f')
         model = SVC(lr=lr, n_epochs=n_epochs)
+
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
@@ -95,6 +97,7 @@ with col_model_info:
 
 st.header('Results')
 col_results, col_results_info = st.columns(2, gap='large')
+
 if data_option == BLOBS and centers > 2 and (model_option == LR or model_option == SVM):
     with col_results:
         st.info(f'{model_option} can\'t solve classification problems with more than two classes.', icon='ℹ️')
