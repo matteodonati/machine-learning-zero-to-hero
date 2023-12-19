@@ -8,10 +8,11 @@ NAIVE_BAYES = 'Gaussian naive Bayes'
 KNN = 'K-nearest neighbors'
 LR = 'Logistic regression'
 SVM = 'Support vector machine'
+LINEAR_REGRESSION = 'Linear regression'
 
 option = st.selectbox(
     'Select a documentation page',
-    (DECISION_TREE, NAIVE_BAYES, KNN, LR, SVM),
+    (DECISION_TREE, NAIVE_BAYES, KNN, LR, SVM, LINEAR_REGRESSION),
     index=None,
 )
 
@@ -832,6 +833,121 @@ elif option == SVM:
 
         Predictions are made based on the sign of the decision function, which involves the learned 
         $$\\alpha$$, $$b$$, and the kernel function.
+        """,
+        unsafe_allow_html=True
+    )
+elif option == LINEAR_REGRESSION:
+    st.markdown(
+        """
+        ---
+
+        ## Linear Regression <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/classification/linear.py" style="font-size: 15px">[source]</a>
+
+        The following class is an implementation of the linear regression model, 
+        a fundamental algorithm in machine learning and statistics for predicting 
+        a continuous target variable based on one or more explanatory variables.
+        The linear regression model assumes a linear relationship between the 
+        independent variable X and the dependent variable y. This relationship 
+        is represented as:
+        """,
+        unsafe_allow_html=True
+    )
+    st.latex(r"""
+        y = mX + c
+    """)
+    st.markdown(
+        """
+        where $$y$$ is the dependent variable, $$X$$ is the independent variable,
+        $$m$$ is the slope of the line, and $$c$$ is the $$y$$-axis intercept.
+
+        The goal of linear regression is to find the best values for $$m$$ and $$c$$ such 
+        that the predicted values of $$y$$ are as close as possible to the actual values. 
+        This is typically done by minimizing the mean squared error (MSE), a common loss 
+        function in regression problems:
+        """,
+        unsafe_allow_html=True
+    )
+    st.latex(r"""
+        MSE = \frac{1}{N} \sum_{i = 0}^{N}(y_i - \hat{y}_i)^2
+    """)
+    st.markdown(
+        """
+        where $$N$$ is the number of observations, $$y_i$$ is the $$i$$-th ground truth
+        value of the target variable, and $$\hat{y}_i$$ is the predicted value for the
+        target variable.
+
+        In the context of this implementation, gradient descent is used to minimize the
+        loss function.
+
+        This implementation is designed to handle simple linear regression with a single feature.
+
+        ### `LinearRegression` Class
+
+        The `LinearRegression` class is used to create a linear model that predicts the dependent 
+        variable ($$y$$) based on the values of the independent variable ($$X$$). It assumes a 
+        linear relationship between the two variables.
+
+        #### Constructor
+
+        The constructor method initializes the Linear Regression model with default settings.
+
+        ```python
+        class LinearRegression():
+            def __init__(self, n_epochs=2000, lr=1e-3):
+                self.m = 0.0
+                self.c = 0.0
+                self.n_epochs = n_epochs
+                self.lr = lr
+        ```
+
+        `n_epochs` is the number of iterations for the training process, while `lr` is the learning 
+        rate, determining the step size at each iteration while moving toward a minimum of the 
+        loss function. The model parameters (`m` and `c`) are initialized to zero.
+
+        #### `_update` Method
+
+        A private method used during the fitting process to update the model's parameters based 
+        on the gradient of the loss function.
+
+        ```python
+        def _update(self, X, y, y_pred):
+            dLdm = (-2 / len(X)) * np.sum(X * (y - y_pred))
+            dLdc = (-2 / len(X)) * np.sum(y - y_pred)
+            self.m = self.m - self.lr * dLdm
+            self.c = self.c - self.lr * dLdc
+        ```
+
+        The method performs the following steps:
+        1. It computes the gradients of the loss function with respect to `m` (`dLdm`) and c (`dLdc`).
+        2. It updates the values of `m` and `c` using gradient descent, where the parameters are 
+        adjusted in the opposite direction of the gradient.
+
+        #### `fit` Method
+
+        The `fit` method is used to train the linear regression model on the provided dataset.
+
+        ```python
+        def fit(self, X, y):
+            for _ in range(self.n_epochs):
+                y_pred = self.m * X + self.c
+                self._update(X, y, y_pred)
+        ```
+
+        The method iteratively adjusts `m` and `c` to minimize the loss function. It does this 
+        over the number of epochs (`n_epochs`) specified during initialization.
+
+        #### `predict` Method
+
+        After the model is trained, the `predict` method can be used to make predictions on new 
+        data.
+
+        ```python
+        def predict(self, X):
+            return self.m * X + self.c
+        ```
+
+        This method calculates the predicted target values as a linear combination of the input 
+        `X` and the learned parameters `m` and `c`.
         """,
         unsafe_allow_html=True
     )
