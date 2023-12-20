@@ -82,9 +82,9 @@ def add_regression_line(fig, X, model):
     )
     fig.add_trace(line)
 
-def add_clustering_scheme(fig, X, y, labels, marker_symbol='circle'):
+def add_clustering_scheme(fig, x, y, labels, marker_symbol='circle'):
     """
     Adds a clustering scheme to the plot.
     """
-    scatter = _create_scatter_plot(X, y, labels, marker_symbol=marker_symbol)
+    scatter = _create_scatter_plot(x, y, labels, marker_symbol=marker_symbol)
     fig.add_trace(scatter)
