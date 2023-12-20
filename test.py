@@ -4,7 +4,7 @@ from ml.utils.data import train_test_split, make_sin
 from ml.utils.metrics import accuracy_score, precision_score, recall_score, mean_squared_error
 from ml.supervised.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from ml.supervised.naive_bayes import GaussianNB
-from ml.supervised.neighbors import KNeighborsClassifier
+from ml.supervised.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from ml.supervised.linear import LogisticRegression, LinearRegression
 from ml.supervised.svm import SVC
 
@@ -22,7 +22,8 @@ print('Fitting the model to train data.')
 #model = KNeighborsClassifier()
 #model = LogisticRegression()
 #model = LinearRegression()
-model = DecisionTreeRegressor()
+#model = DecisionTreeRegressor()
+model = KNeighborsRegressor()
 model.fit(X_train, y_train)
 
 print('Predicting values for test data.')

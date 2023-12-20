@@ -4,6 +4,7 @@ from ml.utils.data import train_test_split, make_sin
 from ui.utils.plot import create_plot, add_data_to_plot, add_regression_line
 from ml.supervised.linear import LinearRegression
 from ml.supervised.tree import DecisionTreeRegressor
+from ml.supervised.neighbors import KNeighborsRegressor
 
 st.set_page_config(layout='wide')
 st.title('Regression :chart_with_upwards_trend:')
@@ -47,10 +48,11 @@ with col_model:
 
     LINEAR = 'Linear regression'
     REGRESSION_TREE = 'Regression tree'
+    KNN = 'K-nearest neighbors'
 
     model_option = st.selectbox(
         'Select a model',
-        (LINEAR, REGRESSION_TREE),
+        (LINEAR, REGRESSION_TREE, KNN),
     )
 
     if model_option == LINEAR:
@@ -61,6 +63,9 @@ with col_model:
         max_depth = st.slider('Select the maximum depth', 0, 10, 5)
         min_samples_split = st.slider('Select the minimum number of samples required to split a node', 0, 5, 2)
         model = DecisionTreeRegressor(max_depth=max_depth, min_samples_split=min_samples_split)
+    elif model_option == KNN:
+        n_neighbors = st.slider('Select the number of neighbors', 1, 10, 5)
+        model = KNeighborsRegressor(n_neighbors=n_neighbors)
     
     X_train = X_train[:, 0]
     model.fit(X_train, y_train)
