@@ -33,7 +33,7 @@ if option == CLASSIFICATION_TREE:
         """
         ---
         
-        ## Classification Tree <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/classification/tree.py" style="font-size: 15px">[source]</a>
+        ## Classification Tree <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/tree.py" style="font-size: 15px">[source]</a>
 
         A decision tree for classification problems is a predictive model that maps features 
         (input variables) to outcomes (classes or labels) by recursively splitting 
@@ -278,7 +278,7 @@ elif option == NAIVE_BAYES:
         """
         ---
         
-        ## Gaussian Naive Bayes <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/classification/naive_bayes.py" style="font-size: 15px">[source]</a>
+        ## Gaussian Naive Bayes <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/naive_bayes.py" style="font-size: 15px">[source]</a>
         
         The Gaussian Naive Bayes algorithm is a probabilistic classification 
         model based on Bayes' theorem with the assumption of independence between 
@@ -475,7 +475,7 @@ elif option == KNN:
         """
         ---
 
-        ## $$k$$-Nearest Neighbors (Classification) <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/classification/neighbors.py" style="font-size: 15px">[source]</a>
+        ## $$k$$-Nearest Neighbors (Classification) <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/neighbors.py" style="font-size: 15px">[source]</a>
 
         The $$k$$-nearest neighbors ($$k$$NN) algorithm is a simple and effective supervised learning 
         algorithm used for classification and regression. It classifies a data point based on 
@@ -553,7 +553,7 @@ elif option == LR:
         """
         ---
 
-        ## Logistic Regression <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/classification/linear.py" style="font-size: 15px">[source]</a>
+        ## Logistic Regression <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/linear.py" style="font-size: 15px">[source]</a>
 
         Logistic regression is a method used for binary classification problems, where 
         the goal is to predict the probability of an instance belonging to a particular 
@@ -686,7 +686,7 @@ elif option == SVM:
         """
         ---
 
-        ## Support Vector Machine <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/classification/svm.py" style="font-size: 15px">[source]</a>
+        ## Support Vector Machine <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/svm.py" style="font-size: 15px">[source]</a>
 
         Support Vector Machines (SVMs) are a set of supervised learning methods used for 
         classification, regression, and outlier detection. An SVM with an RBF kernel aims 
@@ -843,7 +843,7 @@ elif option == LINEAR_REGRESSION:
         """
         ---
 
-        ## Linear Regression <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/classification/linear.py" style="font-size: 15px">[source]</a>
+        ## Linear Regression <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/linear.py" style="font-size: 15px">[source]</a>
 
         The following class is an implementation of the linear regression model, 
         a fundamental algorithm in machine learning and statistics for predicting 
@@ -958,7 +958,7 @@ elif option == REGRESSION_TREE:
         """
         ---
         
-        ## Regression Tree <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/classification/tree.py" style="font-size: 15px">[source]</a>
+        ## Regression Tree <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/tree.py" style="font-size: 15px">[source]</a>
 
         A decision tree for regression problems is a predictive model that maps features 
         (input variables) to continuous outcomes (target values) by recursively splitting 
@@ -1204,7 +1204,7 @@ elif option == KNN_REGRESSION:
         """
         ---
 
-        ## $$k$$-Nearest Neighbors (Regression) <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/classification/neighbors.py" style="font-size: 15px">[source]</a>
+        ## $$k$$-Nearest Neighbors (Regression) <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/supervised/neighbors.py" style="font-size: 15px">[source]</a>
 
         The $$k$$-nearest neighbors ($$k$$NN) algorithm is a simple and effective supervised learning 
         algorithm used for classification and regression. It can predict the $$y$$ value for a particular

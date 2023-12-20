@@ -31,10 +31,10 @@ def add_data_to_plot(fig, X, y, marker_symbol='circle', problem_type='classifica
     """
     Adds data to a plot.
     """
-    if problem_type == 'regression':
-        scatter = _create_scatter_plot(X, y, 'rgb(0, 0, 255)', marker_symbol=marker_symbol)
-    else:
+    if problem_type == 'classification':
         scatter = _create_scatter_plot(X[:, 0], X[:, 1], y, marker_symbol=marker_symbol)
+    elif problem_type == 'regression':
+        scatter = _create_scatter_plot(X, y, 'rgb(0, 0, 255)', marker_symbol=marker_symbol)
     fig.add_trace(scatter)
 
 def add_decision_boundary(fig_train, fig_test, X, model):
@@ -81,3 +81,10 @@ def add_regression_line(fig, X, model):
         showlegend=False,
     )
     fig.add_trace(line)
+
+def add_clustering_scheme(fig, X, y, labels, marker_symbol='circle'):
+    """
+    Adds a clustering scheme to the plot.
+    """
+    scatter = _create_scatter_plot(X, y, labels, marker_symbol=marker_symbol)
+    fig.add_trace(scatter)
