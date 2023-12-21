@@ -11,21 +11,28 @@ SVM = 'Support vector machine'
 LINEAR_REGRESSION = 'Linear regression'
 REGRESSION_TREE = 'Decision tree (regression)'
 KNN_REGRESSION = 'K-nearest neighbors (regression)'
-
-option = st.selectbox(
-    'Select a documentation page',
-    (CLASSIFICATION_TREE, NAIVE_BAYES, KNN, LR, SVM, LINEAR_REGRESSION, REGRESSION_TREE, KNN_REGRESSION),
-    index=None,
-)
+KMEANS = 'K-means'
+DBSCAN = 'DBSCAN'
 
 st.markdown(
     """
+    This page offers documentation for all the implemented code. While it provides a concise 
+    introduction to the various models and algorithms, it is recommended to supplement it 
+    with more comprehensive resources for a deeper understanding. Use the following `selectbox`
+    to access the documentation.
+
     <script
         src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
         type="text/javascript">
     </script>
     """,
     unsafe_allow_html=True
+)
+
+option = st.selectbox(
+    'Select a documentation page',
+    (CLASSIFICATION_TREE, NAIVE_BAYES, KNN, LR, SVM, LINEAR_REGRESSION, REGRESSION_TREE, KNN_REGRESSION, KMEANS, DBSCAN),
+    index=None,
 )
 
 if option == CLASSIFICATION_TREE:
@@ -1266,6 +1273,202 @@ elif option == KNN_REGRESSION:
         ```python
         y_pred = np.mean(self.y_train[neighbors_idx], axis=1).tolist()
         ```
+        """,
+        unsafe_allow_html=True
+    )
+elif option == KMEANS:
+    st.markdown(
+        """
+        ---
+
+        ## K-Means <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/unsupervised/cluster.py" style="font-size: 15px">[source]</a>
+
+        The `KMeans` class in Python is an implementation of the K-means clustering algorithm, a widely-used 
+        method in unsupervised learning for grouping data into a pre-defined number of clusters. Each 
+        cluster in K-means clustering is defined by its center, which is typically the mean of the points 
+        in the cluster.
+
+        ### `KMeans` Class
+
+        The `KMeans` class is used for partitioning a dataset into $$k$$ distinct, non-overlapping subgroups 
+        (clusters) where each data point belongs to the cluster with the nearest mean. It is suitable 
+        for scenarios where the number of clusters is known a priori.
+
+        #### Constructor
+
+        The constructor method initializes the K-means clustering model with default settings.
+
+        ```python
+        class KMeans():
+            def __init__(self, n_clusters=2, n_iter=100):
+                self.n_clusters = n_clusters
+                self.n_iter = n_iter
+                self.centers = None
+        ```
+
+        Here, `n_clusters` is the number of clusters to form and the number of centroids to generate.
+        `n_iter` is the number of iterations for the K-means clustering algorithm.
+
+        #### `fit` Method
+
+        The `fit` method is used to compute K-means clustering on the provided dataset.
+
+        ```python
+        def fit(self, X):
+            n_samples = len(X)
+            self.centers = X[np.random.choice(n_samples, self.n_clusters, replace=False)]
+            for _ in range(self.n_iter):
+                clusters = self.predict(X)
+                new_centers = np.array([X[clusters == j].mean(axis=0) for j in range(self.n_clusters)])
+                if np.all(self.centers == new_centers):
+                    break
+                self.centers = new_centers
+        ```
+
+        The method performs the following steps:
+        1. Initializes the cluster centers randomly from the data points.
+        2. Assigns each data point to the nearest cluster center.
+        3. Recomputes the cluster centers as the mean of the assigned data points.
+        4. Repeat steps 2 and 3 for a fixed number of iterations or until cluster centers do not change.
+
+        #### `fit_predict` Method
+
+        This method is a convenience that computes cluster centers and predicts the cluster index for 
+        each sample in `X`.
+
+        ```python
+        def fit_predict(self, X):
+            self.fit(X)
+            return self.predict(X)
+        ```
+
+        #### predict Method
+
+        After the model is trained (cluster centers are computed), the predict method can be used to 
+        assign each sample in `X` to the nearest cluster center. This method calculates the Euclidean 
+        distance of each data point from each cluster center and assigns the data point to the closest 
+        cluster.
+
+        ```python
+        def predict(self, X):
+            distances = np.sqrt(((X[:, np.newaxis] - self.centers)**2).sum(axis=2))
+            return np.argmin(distances, axis=1)
+        ```
+        """,
+        unsafe_allow_html=True
+    )
+elif option == DBSCAN:
+    st.markdown(
+        """
+        ---
+
+        ## DBSCAN <a href="https://github.com/matteodonati/machine-learning-zero-to-hero/blob/main/ml/unsupervised/cluster.py" style="font-size: 15px">[source]</a>
+
+        DBSCAN (Density-Based Spatial Clustering of Applications with Noise) is a popular clustering 
+        algorithm used in machine learning. Unlike centroid-based algorithms like K-Means, DBSCAN 
+        groups together points that are closely packed together while marking points in low-density 
+        regions as outliers or noise. This algorithm excels in finding clusters of arbitrary shapes 
+        and sizes, making it suitable for various applications.
+
+        ### `DBSCAN` Class
+
+        This class implements the DBSCAN clustering algorithm.
+
+        #### Constructor
+
+        Initializes the `DBSCAN` object with the specified `eps` and `min_samples` values. It also 
+        initializes `self.labels` to None, which will later store the cluster labels for each point.
+
+        ```python
+        class DBSCAN():
+            def __init__(self, eps=0.5, min_samples=5):
+                self.eps = eps
+                self.min_samples = min_samples
+                self.labels = None
+        ```
+
+        Here, `eps` is the maximum distance between two samples for one to be considered as in the 
+        neighborhood of the other. `min_samples` is the number of samples in a neighborhood for a 
+        point to be considered a core point.
+
+        #### `fit` Method
+
+        Runs the DBSCAN clustering algorithm on dataset `X`. First,
+
+        ```python
+        self.labels = [0] * len(X)
+        label = 0
+        ```
+
+        initializes the `labels` list with zeros for all points in `X`. Zero indicates that a point 
+        has not been considered yet. Moreover, it initializes the current cluster label to zero.
+        Then,
+
+        ```python
+        for i in range(len(X)):
+            if not (self.labels[i] == 0):
+                continue
+            neighbors = self._compute_neighborhood(X, i)
+            if len(neighbors) < self.min_samples:
+                self.labels[i] = -1
+        ```
+
+        the `for` loop iterates over all points in `X`. `if not (self.labels[i] == 0): continue` skips 
+        points already assigned to a cluster or marked as noise. `neighbors = self._compute_neighborhood(X, i)` 
+        finds the neighbors of the current point `i`. `if len(neighbors) < self.min_samples` checks 
+        if the point `i` is a noise point. If that is the case, than `-1` is assigned to that point.
+
+        ```python
+        else:
+            label += 1
+            self.labels[i] = label
+            k = 0
+            while k < len(neighbors):
+                neighbor_idx = neighbors[k]
+                if self.labels[neighbor_idx] == -1:
+                    self.labels[neighbor_idx] = label
+                elif self.labels[neighbor_idx] == 0:
+                    self.labels[neighbor_idx] = label
+                    new_neighbors = self._compute_neighborhood(X, neighbor_idx)
+                    if len(new_neighbors) >= self.min_samples:
+                        neighbors += new_neighbors
+                k += 1
+        ```
+
+        Here, the cluster label is incremented, `self.labels[i] = label` assigns the cluster label to 
+        point `i`, and the `while` loop iterates through all neighbors of the current point `i`. Inside the 
+        loop, each neighbor is checked and, if unvisited or marked as noise, it is added to the current 
+        cluster. In the end, `neighbors += new_neighbors` expands the `neighbors` list with new neighbors 
+        of the current neighbor point, if it is also a core point.
+
+        #### `fit_predict` Method
+
+        Runs the DBSCAN clustering algorithm on dataset `X` and returns the cluster labels.
+
+        ```python
+        def fit_predict(self, X):
+            self.fit(X)
+            return self.labels
+        ```
+
+        #### `_compute_neighborhood` Method
+
+        Computes and returns the neighborhood of a point `p` within distance `eps`.
+
+        ```python
+        def _compute_neighborhood(self, X, p):
+            neighbors = []
+            for i in range(len(X)):
+                if np.linalg.norm(X[p] - X[i]) < self.eps:
+                    neighbors.append(i)
+            return neighbors
+        ```
+
+        The method works as follows:
+        1. It initializes an empty list `neighbors`.
+        2. It iterates over all points in `X`.
+        3. It checks if the distance between point `p` and another point `i` is less than `eps`.
+        4. It adds the index of point `i` to neighbors if it is within `eps` distance from point `p`.
         """,
         unsafe_allow_html=True
     )

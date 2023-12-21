@@ -79,12 +79,12 @@ class DBSCAN():
         self.fit(X)
         return self.labels        
 
-    def _compute_neighborhood(self, X, P):
+    def _compute_neighborhood(self, X, p):
         """
         Computes the neighborhood of a data point.
         """
         neighbors = []
         for i in range(len(X)):
-            if np.linalg.norm(X[P] - X[i]) < self.eps:
+            if np.linalg.norm(X[p] - X[i]) < self.eps:
                 neighbors.append(i)
         return neighbors
