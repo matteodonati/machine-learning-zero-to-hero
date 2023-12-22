@@ -15,21 +15,27 @@ To access the application, visit [https://machine-learning-zero-to-hero-t9wwbvyg
 - Choose from default datasets and configure model settings.
 - Interactive plots for visual representation of classification results.
 
+![classification](./figures/classification.png)
+
 #### Regression
 - Explore predictive analytics with regression algorithms.
 - Handle linear and nonlinear relationships.
 - Visualize predictions with informative plots.
+
+![regression](./figures/regression.png)
 
 #### Clustering
 - Understand data structures through clustering algorithms.
 - Group similar data points together.
 - Interactive visualizations to uncover patterns and relationships.
 
+![clustering](./figures/clustering.png)
+
 #### Documentation
 - Comprehensive documentation for each implemented model and algorithm.
 - Dive deep into the methods and principles of machine learning.
 
-## Installation Instructions
+## Local Installation
 
 1. Clone the repository:
    ```bash
