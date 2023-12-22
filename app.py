@@ -1,7 +1,7 @@
 import streamlit as st
 from st_pages import show_pages_from_config
 
-st.set_page_config(layout='centered')
+st.set_page_config(page_title='Home', layout='centered')
 st.title('Machine Learning: From Zero to Hero :rocket:')
 show_pages_from_config()
 
