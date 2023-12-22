@@ -2,4 +2,3 @@ streamlit
 numpy
 scikit-learn
 plotly
-st-pages

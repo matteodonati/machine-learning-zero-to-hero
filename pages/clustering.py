@@ -4,6 +4,7 @@ from ui.utils.plot import create_plot, add_clustering_scheme
 from ml.utils.data import normalize_data
 from ml.unsupervised.cluster import KMeans, DBSCAN
 
+st.set_page_config(page_title='Clustering', layout='centered')
 st.title('Clustering :white_square_button:')
 
 st.markdown(

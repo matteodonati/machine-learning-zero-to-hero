@@ -9,6 +9,7 @@ from ml.supervised.neighbors import KNeighborsClassifier
 from ml.supervised.linear import LogisticRegression
 from ml.supervised.svm import SVC
 
+st.set_page_config(page_title='Classification', layout='centered')
 st.title('Classification :bar_chart:')
 
 st.markdown(

@@ -6,6 +6,7 @@ from ml.supervised.linear import LinearRegression
 from ml.supervised.tree import DecisionTreeRegressor
 from ml.supervised.neighbors import KNeighborsRegressor
 
+st.set_page_config(page_title='Regression', layout='centered')
 st.title('Regression :chart_with_upwards_trend:')
 
 st.markdown(

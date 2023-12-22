@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.set_page_config(layout='centered')
+st.set_page_config(page_title='Documentation', layout='centered')
 st.title('Documentation :page_facing_up:')
 
 CLASSIFICATION_TREE = 'Decision tree (classification)'
